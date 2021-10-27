@@ -27,4 +27,7 @@ platanus scaffold -o Poil -c Poil_contig.fa -IP1 sub1.fastq.trimmed sub2.fastq.t
 platanus gap_close -o Poil -c Poil_scaffold.fa -IP1 sub1.fastq.trimmed sub2.fastq.trimmed -OP2 mp1.fastq.int_trimmed mp2.fastq.int_trimmed 2> gapclose.log
 ```
 ![1](img1.png)
-!
+![1](img2.png)
+![1](img3.png)
+![1](img4.png)
+
