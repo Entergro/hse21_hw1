@@ -17,17 +17,19 @@ multiqc -o multiqc fastqc
 platanus_trim sub*
 platanus_internal_trim mp*
 rm sub*.fastq mp*.fastq
-fastqc *.trimmed
-multiqc -o multiqc *.trimmed
+mkdir fastqc_trimmed
+mkdir multiqc_trimmed
+ls sub* mate_pair_*| xargs -tI{} fastqc -o fastqc_trimmed {}
+multiqc -o multiqc *trimmed
 platanus assemble -f *.trimmed
 
+platanus scaffold -o Poil -c Poil_contig.fa -IP1 sub1.fastq.trimmed sub2.fastq.trimmed -OP2 mp1.fastq.int_trimmed mp2.fastq.int_trimmed
 
-platanus scaffold -o Poil -c Poil_contig.fa -IP1 sub1.fastq.trimmed sub2.fastq.trimmed -OP2 mp1.fastq.int_trimmed mp2.fastq.int_trimmed 2> scaffold.log
+platanus gap_close -o Poil -c Poil_scaffold.fa -IP1 sub1.fastq.trimmed sub2.fastq.trimmed -OP2 mp1.fastq.int_trimmed mp2.fastq.int_trimmed
 
-platanus gap_close -o Poil -c Poil_scaffold.fa -IP1 sub1.fastq.trimmed sub2.fastq.trimmed -OP2 mp1.fastq.int_trimmed mp2.fastq.int_trimmed 2> gapclose.log
+rm *trimmed
 ```
 ![1](img1.png)
 ![1](img2.png)
 ![1](img3.png)
 ![1](img4.png)
-
