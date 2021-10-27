@@ -1,0 +1,180 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Untitled5.ipynb",
+      "provenance": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "NnO_drLfVES-",
+        "outputId": "015cdebe-805a-42e4-f0ab-db56c48c66af"
+      },
+      "source": [
+        "!pip install biopython\n",
+        "\n",
+        "import re\n",
+        "\n",
+        "import numpy as np\n",
+        "\n",
+        "import Bio\n",
+        "from Bio import SeqIO\n",
+        "from Bio.Seq import Seq\n"
+      ],
+      "execution_count": 2,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: biopython in /usr/local/lib/python3.7/dist-packages (1.79)\n",
+            "Requirement already satisfied: numpy in /usr/local/lib/python3.7/dist-packages (from biopython) (1.19.5)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "n95nzQRaVn5L",
+        "outputId": "39a82f1a-d0f7-4069-cd0c-959091a7460d"
+      },
+      "source": [
+        "data = []\n",
+        "with open('Poil_contig.fa', 'rt') as handle:\n",
+        "    for r in SeqIO.parse(handle, 'fasta'):\n",
+        "        data.append(len(r))\n",
+        "print(f'Общее количество {len(data)}')\n",
+        "print(f'Общая длина {np.sum(data)}')\n",
+        "print(f'Наибольшая длина {max(np.array(data))}')\n",
+        "\n",
+        "l = 0\n",
+        "N50 = 0\n",
+        "\n",
+        "for el in sorted(data):\n",
+        "    l += el\n",
+        "    if l >= np.sum(data)/2:\n",
+        "        N50 = el\n",
+        "        break\n",
+        "print(f'N50 {N50}')"
+      ],
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Общее количество 465\n",
+            "Общая длина 3096457\n",
+            "Наибольшая длина 142015\n",
+            "N50 53980\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Sr8i3DohVHaL",
+        "outputId": "26a6b998-106e-47f5-ab40-8474740e2036"
+      },
+      "source": [
+        "data = []\n",
+        "ans = []\n",
+        "with open('Poil_scaffold.fa', 'rt') as handle:\n",
+        "    for rec in SeqIO.parse(handle, 'fasta'):\n",
+        "        data.append(len(rec))\n",
+        "        ans.append(rec)\n",
+        "print(f'Общее количество {len(data)}')\n",
+        "print(f'Общая длина {np.sum(data)}')\n",
+        "print(f'Наибольшая длина {max(np.array(data))}')\n",
+        "\n",
+        "l = 0\n",
+        "N50 = 0\n",
+        "\n",
+        "for el in sorted(data):\n",
+        "    l += el\n",
+        "    if l >= np.sum(data)/2:\n",
+        "        N50 = el\n",
+        "        break\n",
+        "print(f'N50 {N50}')\n",
+        "\n",
+        "count_gaps = 0\n",
+        "for el in re.findall(r'N*', str(ans[0].seq)):\n",
+        "    if el!='':\n",
+        "        count_gaps+=1\n",
+        "\n",
+        "len_gaps = ans[0].seq.count('N')\n",
+        "print(f'Количество гэпов {count_gaps}')\n",
+        "print(f'Общая длина гэпов {len_gaps}\\n')"
+      ],
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Общее количество 72\n",
+            "Общая длина 3875499\n",
+            "Наибольшая длина 2801805\n",
+            "N50 2801805\n",
+            "Количество гэпов 1\n",
+            "Общая длина гэпов 19\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "GJKOIRTuewUx",
+        "outputId": "7e8c9b1c-1c55-42c8-9598-cd6ce6f812c5"
+      },
+      "source": [
+        "f = open('Poil_gapClosed.fa', 'r')\n",
+        "text = f.read()\n",
+        "print(f\"Число гэпов {len(re.findall(r'(N+)', text))}\")\n",
+        "\n",
+        "counter = 0\n",
+        "for i in re.findall(r'(N+)', text):\n",
+        "    counter += len(i)\n",
+        "print(f\"Наибольшая длина {counter}\")\n"
+      ],
+      "execution_count": 17,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Число гэпов 40\n",
+            "Наибольшая длина 2214\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
